@@ -3,17 +3,19 @@ const pool = require('../config/db');
 
 // 根据用户名查询用户
 const getUserByUsername = async (username) => {
-  const [rows] = await pool.query('SELECT * FROM users WHERE username = ?', [username],(err, results) => {
-    if (err) return res.messageInfo(err);
-    if (results.length !==1 ) res.messageInfo("获取用户信息失败");
-    return rows[0];
-  });
-  
+  console.log(username)
+  const [rows] = await pool.query('SELECT * FROM users WHERE username = ?', [username])
+  return rows[0];
 };
 
-// 根据ID查询用户
+// 根据ID查询用户全部信息
 const getUserById = async (id) => {
   const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
+  return rows;
+};
+// 根据ID查询用户除密码状态以外的信息
+const getPartUserById = async (id) => {
+  const [rows] = await pool.query('SELECT id, username, nickname, email, user_pic FROM users WHERE id = ?', [id]);
   return rows;
 };
 
@@ -30,11 +32,11 @@ const createUser = async (username, password) => {
 };
 
 // 更新用户
-const updateUser = async (id, name, email) => {
-  await pool.query(
-    'UPDATE users SET name = ?, email = ? WHERE id = ?',
-    [name, email, id]
-  );
+const updateUser = async (user,id) => {
+  const [result] = await pool.query(
+    'UPDATE users SET ? WHERE id = ?',
+    [user, id])
+    return result.affectedRows
 };
 
 // 删除用户
@@ -47,5 +49,6 @@ module.exports = {
   createUser,
   updateUser,
   deleteUser,
-  getUserByUsername
+  getUserByUsername,
+  getPartUserById
 };
