@@ -10,5 +10,7 @@ router.post('/userInfo', body('email').isEmail().withMessage('邮箱格式不正
     body('username').trim().notEmpty().withMessage('名称不能为空').isString().withMessage('名称必须是字符串')
     .isLength({ max: 50 }).withMessage('名称不能超过50个字符'),
     userInfoController.updateUserInfo)
+//重置密码
+router.post('/updatepwd',userInfoController.updateUserPassword)
 
 module.exports = router

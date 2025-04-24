@@ -1,4 +1,6 @@
 const { body, param, validationResult } = require('express-validator');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const userModel = require('../models/userModel');
 
 const getUserInfo = async (req, res) => {
@@ -18,17 +20,51 @@ const updateUserInfo = async (req, res) => {
     if(!results.isEmpty()) {
         res.messageInfo(results.array()[0]["msg"]);
     }
+    //更新用户信息之后重新生成token
+    const token = jwt.sign(
+        {id: user.id, username: user.username},
+        process.env.JWT_SECRET, // 使用环境变量中的密钥
+        { expiresIn: process.env.JWT_EXPIRES_IN } // 设置过期时间为1小时
+    );
     //更新操作
     const updateResult = await userModel.updateUser(req.body, req.auth.id);
     if(updateResult!=1) res.messageInfo("更新用户信息失败")
+    res.send({
+        code: 0,
+        message: '更新成功',
+    })
+}
+const updateUserPassword = async (req, res) => {
+    //密码验证
+    if(req.body.old_pwd === req.body.new_pwd) res.messageInfo("旧密码不能和新密码相同")
+    if(req.body.new_pwd !== req.body.re_pwd) res.messageInfo("两次输入的密码不一致")
+        
+    const user = await userModel.getUserById(req.auth.id);
+    if (!user) {
+        return res.messageInfo("用户不存在")
+    }
+    const isOldPasswordValid = await bcrypt.compare(req.body.new_pwd, user.password);
+    if(isOldPasswordValid) return res.messageInfo("新密码不能和旧密码相同")
+    const isPasswordValid = await bcrypt.compare(req.body.old_pwd, user.password);
+    if(!isPasswordValid){
+        return res.messageInfo("密码错误")
+    }
 
-    res.status(200).json({
-        "code": 0,
-        "message": "更新成功"
-    });
+    //更新操作
+    const hash_password = await bcrypt.hash(req.body.new_pwd, 10);
+    const updateResult = await userModel.updateUser({
+        'password': hash_password
+    }, req.auth.id);
+
+    if(updateResult!=1) res.messageInfo("更新用户信息失败")
+    res.send({
+        code: 0,
+        message: '密码更新成功',
+    })
 }
 
 module.exports = {
     getUserInfo,
-    updateUserInfo
+    updateUserInfo,
+    updateUserPassword
 };

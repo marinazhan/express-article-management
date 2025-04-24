@@ -3,7 +3,6 @@ const pool = require('../config/db');
 
 // 根据用户名查询用户
 const getUserByUsername = async (username) => {
-  console.log(username)
   const [rows] = await pool.query('SELECT * FROM users WHERE username = ?', [username])
   return rows[0];
 };
@@ -11,7 +10,7 @@ const getUserByUsername = async (username) => {
 // 根据ID查询用户全部信息
 const getUserById = async (id) => {
   const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
-  return rows;
+  return rows[0];
 };
 // 根据ID查询用户除密码状态以外的信息
 const getPartUserById = async (id) => {

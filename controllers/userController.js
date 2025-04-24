@@ -78,34 +78,32 @@ const createUser = async (req, res, next) => {
 };
 
 // 更新用户
-const updateUser = async (req, res, next) => {
-    res.send('updateUser')
-//   try {
-//     const { id } = req.params;
-//     const { name, email } = req.body;
-//     await userModel.updateUser(id, name, email);
-//     res.status(200).json({ message: 'User updated' });
-//   } catch (err) {
-//     next(err);
-//   }
-};
+// const updateUser = async (req, res, next) => {
+//     res.send('updateUser')
+// //   try {
+// //     const { id } = req.params;
+// //     const { name, email } = req.body;
+// //     await userModel.updateUser(id, name, email);
+// //     res.status(200).json({ message: 'User updated' });
+// //   } catch (err) {
+// //     next(err);
+// //   }
+// };
 
 // 删除用户
-const deleteUser = async (req, res, next) => {
-    res.send('deleteUser')
-//   try {
-//     const { id } = req.params;
-//     await userModel.deleteUser(id);
-//     res.status(204).send();
-//   } catch (err) {
-//     next(err);
-//   }
-};
+// const deleteUser = async (req, res, next) => {
+//     res.send('deleteUser')
+// //   try {
+// //     const { id } = req.params;
+// //     await userModel.deleteUser(id);
+// //     res.status(204).send();
+// //   } catch (err) {
+// //     next(err);
+// //   }
+// };
 
 module.exports = {
   login,
   reg,
-  createUser,
-  updateUser,
-  deleteUser
+  createUser
 };
