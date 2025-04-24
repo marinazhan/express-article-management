@@ -12,5 +12,7 @@ router.post('/userInfo', body('email').isEmail().withMessage('邮箱格式不正
     userInfoController.updateUserInfo)
 //重置密码
 router.post('/updatepwd',userInfoController.updateUserPassword)
+//更换用户头像
+router.post('/avatar',body('user_pic').trim().notEmpty().withMessage('名称不能为空'),userInfoController.updateUserAvatar)
 
 module.exports = router

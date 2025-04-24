@@ -35,7 +35,7 @@ const updateUserInfo = async (req, res) => {
     })
 }
 const updateUserPassword = async (req, res) => {
-    //密码验证
+    //密码验证(优化可以做关于密码的规则验证)
     if(req.body.old_pwd === req.body.new_pwd) res.messageInfo("旧密码不能和新密码相同")
     if(req.body.new_pwd !== req.body.re_pwd) res.messageInfo("两次输入的密码不一致")
         
@@ -62,9 +62,27 @@ const updateUserPassword = async (req, res) => {
         message: '密码更新成功',
     })
 }
+//更换用户头像
+const updateUserAvatar = async (req, res) => {
+    const results = validationResult(req);
+    //验证有错误，返回错误信息
+    if(!results.isEmpty()) {
+        res.messageInfo(results.array()[0]["msg"]);
+    }
+    //更新操作
+    const updateResult = await userModel.updateUser({
+        'user_pic': req.body.user_pic
+    }, req.auth.id);
+    if(updateResult!=1) res.messageInfo("更新头像失败")
+    res.send({
+        code: 0,
+        message: '更新成功',
+    })
+}
 
 module.exports = {
     getUserInfo,
     updateUserInfo,
-    updateUserPassword
+    updateUserPassword,
+    updateUserAvatar
 };
