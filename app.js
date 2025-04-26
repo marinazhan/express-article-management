@@ -9,6 +9,7 @@ const app = express();
 const { expressjwt: jwt } = require("express-jwt");
 const userRoutes = require('./routes/userRoutes');
 const userInfoRoutes = require('./routes/userInfoRoutes');
+const artcateRoutes = require('./routes/artcateRoutes');
 
 // 3. 添加中间件（解析JSON和URL编码请求体）
 app.use(express.json());
@@ -33,6 +34,7 @@ app.use(jwt({secret: process.env.JWT_SECRET, algorithms: ['HS256']}).unless({pat
 //用户路由
 app.use('/api', userRoutes);
 app.use('/my', userInfoRoutes)
+app.use('/my/cate', artcateRoutes)
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
