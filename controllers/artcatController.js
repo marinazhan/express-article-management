@@ -33,8 +33,27 @@ const addArtCats = async(req, res) => {
         "message": "新增文章分类成功"
     });
 }
+//删除分类
+const delArtCats = async (req,res) => {
+    //验证id格式
+    const results = validationResult(req);
+    if(!results.isEmpty()) {
+        return res.messageInfo(results.array()[0]["msg"]);
+    }
+    //验证id在数据库中是否存在，且is_delete=0
+    const is_artcat = await artcatModel.getArtCatById(req.body.id)
+    if(is_artcat.length==0) return res.messageInfo("分类不存在或已被删除")
+    //删除分类
+    const del_result = await artcatModel.delArtCatById(req.body.id)
+    if(del_result!=1) return res.messageInfo("分类删除报错")
+    res.status(200).json({
+        "code": 0,
+        "message": "删除文章分类成功"
+    });
+}
 
 module.exports = {
     getAllArtCats,
-    addArtCats
+    addArtCats,
+    delArtCats
 }

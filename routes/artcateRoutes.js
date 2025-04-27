@@ -11,6 +11,7 @@ router.post('/add', body('cate_name').trim().notEmpty().withMessage('分类名�
 body('cate_alias').trim().notEmpty().withMessage('分类别名不能为空').isString().withMessage('分类别名必须是字符串')
 .isLength({ max: 50 }).withMessage('分类别名不能超过50个字符'),artcatController.addArtCats)
 //删除文章分类
-//router.
+router.delete('/del',body('id').notEmpty().withMessage('分类id不能为空')
+.isInt({min:1}).withMessage('分类id格式不对'),artcatController.delArtCats)
  
 module.exports = router
